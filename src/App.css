@@ -1,0 +1,8 @@
+.app-layout {
+  min-height: 100vh;
+}
+
+.main-content {
+  padding-top: 90px; /* Compensa la altura del Navbar fijo */
+  padding-bottom: 20px;
+}

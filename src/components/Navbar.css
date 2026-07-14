@@ -1,0 +1,33 @@
+.navbar {
+  background-color: white;
+  border-bottom: 1px solid #dbdbdb;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 100;
+}
+
+.navbar-container {
+  max-width: 975px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-family: cursive; /* Simulando la fuente de Instagram */
+  cursor: pointer;
+}
+
+.navbar-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  margin-left: 15px;
+  cursor: pointer;
+}
