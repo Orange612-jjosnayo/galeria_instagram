@@ -1,15 +1,16 @@
 .navbar {
-  background-color: white;
-  border-bottom: 1px solid #dbdbdb;
+  background-color: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
   position: fixed;
   top: 0;
   width: 100%;
-  height: 60px;
+  height: 70px;
   z-index: 100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-container {
-  max-width: 975px;
+  max-width: 1400px;
   margin: 0 auto;
   height: 100%;
   display: flex;
@@ -19,15 +20,40 @@
 }
 
 .navbar-logo {
-  font-size: 1.5rem;
-  font-family: cursive; /* Simulando la fuente de Instagram */
-  cursor: pointer;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.navbar-logo:hover {
+  opacity: 0.8;
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .navbar-btn {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  margin-left: 15px;
-  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.navbar-btn:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.navbar-btn.active {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--accent-color);
 }

@@ -1,11 +1,15 @@
 import React from 'react';
+import './PostCard.css';
 
-export default function PostCard({ username, imageUrl, likes }) {
+export default function PostCard({ image, onClick }) {
   return (
-    <div style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px', borderRadius: '8px' }}>
-      <h4 style={{ margin: '0 0 10px 0' }}>@{username}</h4>
-      <img src={imageUrl} alt={`Foto de ${username}`} style={{ width: '100%', maxWidth: '400px' }} />
-      <p>❤️ {likes} Me gusta</p>
+    <div className="image-card" onClick={onClick}>
+      <div className="image-container">
+        <img src={image.imageUrl} alt={image.title} />
+      </div>
+      <div className="image-info">
+        <h4 className="image-title">{image.title}</h4>
+      </div>
     </div>
   );
 }
