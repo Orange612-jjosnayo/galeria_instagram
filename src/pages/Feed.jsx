@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PostCard from '../components/PostCard';
+import ImageModal from '../components/ImageModal';
 import './Feed.css';
 
-export default function Feed({ posts }) {
+export default function Feed({ images }) {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
   return (
-    <div className="feed-container">
-      {posts.map((post) => (
-        <PostCard 
-          key={post.id} 
-          username={post.username} 
-          avatarUrl={post.avatarUrl}
-          imageUrl={post.imageUrl} 
-          likes={post.likes}
-          caption={post.caption}
-        />
-      ))}
-    </div>
+    <>
+      <div className="gallery-grid">
+        {images.map((image) => (
+          <PostCard 
+            key={image.id} 
+            image={image}
+            onClick={() => handleImageClick(image)}
+          />
+        ))}
+      </div>
+      
+      <ImageModal 
+        image={selectedImage} 
+        onClose={closeModal} 
+      />
+    </>
   );
 }

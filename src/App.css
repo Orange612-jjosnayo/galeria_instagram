@@ -1,8 +1,14 @@
 .app-layout {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  padding-top: 90px; /* Compensa la altura del Navbar fijo */
-  padding-bottom: 20px;
+  padding-top: 80px; /* Compensa la altura del Navbar fijo */
+  padding-bottom: 40px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-inline: 20px;
 }
