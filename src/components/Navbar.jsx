@@ -1,26 +1,29 @@
+'use client';
+
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import './Navbar.css';
 
 export default function Navbar() {
-  const location = useLocation();
+  const pathname = usePathname();
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo" style={{ textDecoration: 'none' }}>
+        <Link href="/" className="navbar-logo" style={{ textDecoration: 'none' }}>
           <span className="logo-icon">🖼️</span> Galería
         </Link>
         <div className="navbar-actions">
           <Link 
-            to="/" 
-            className={`navbar-btn ${location.pathname === '/' ? 'active' : ''}`}
+            href="/" 
+            className={`navbar-btn ${pathname === '/' ? 'active' : ''}`}
           >
             Imágenes
           </Link>
           <Link 
-            to="/create" 
-            className={`navbar-btn ${location.pathname === '/create' ? 'active' : ''}`}
+            href="/create" 
+            className={`navbar-btn ${pathname === '/create' ? 'active' : ''}`}
           >
             Añadir Imagen
           </Link>
