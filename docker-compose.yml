@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: galeria_instagram_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: galeria
+      MYSQL_ROOT_PASSWORD: root_password_placeholder
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal-network
+
+  web:
+    image: ghcr.io/owner_lc_placeholder/galeria_instagram:latest
+    container_name: galeria_instagram_web
+    restart: always
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root_password_placeholder
+      - DB_NAME=galeria
+      - DB_PORT=3306
+      - VIRTUAL_HOST=staging.galeria_instagram.VPS_HOST_PLACEHOLDER.nip.io
+      - VIRTUAL_PORT=3000
+    depends_on:
+      - db
+    networks:
+      - internal-network
+      - proxy-network
+
+volumes:
+  db_data:
+
+networks:
+  internal-network:
+    driver: bridge
+  proxy-network:
+    external: true
+    name: proxy-network

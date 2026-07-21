@@ -1,27 +1,46 @@
-# Etapa 1: Compilar la aplicación de React
+# Etapa 1: Instalar dependencias y compilar la aplicación
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copiamos los archivos de dependencias
+# Desactivar telemetría de Next.js
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalación limpia de dependencias
+# Instalar dependencias
 RUN npm ci
 
-# Copiamos todo el código fuente
+# Copiar el código fuente
 COPY . .
 
-# Compilamos el proyecto (Vite generará la carpeta /app/dist)
+# Compilar la aplicación Next.js
 RUN npm run build
 
-# Etapa 2: Servir con Nginx
-FROM nginx:alpine
+# Etapa 2: Servidor de producción ligero
+FROM node:20-alpine AS runner
 
-# Copiamos los archivos estáticos compilados al directorio por defecto de Nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Exponemos el puerto 80 dentro del contenedor
-EXPOSE 80
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-CMD ["nginx", "-g", "daemon off;"]
+# Crear usuario no privilegiado para mayor seguridad
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copiar archivos necesarios desde la etapa de compilación
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["npm", "start"]
