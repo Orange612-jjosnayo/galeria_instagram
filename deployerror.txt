@@ -1,0 +1,176 @@
+Current runner version: '2.336.0'
+Runner Image Provisioner
+Operating System
+Runner Image
+GITHUB_TOKEN Permissions
+Secret source: Actions
+Prepare workflow directory
+Prepare all required actions
+Getting action download info
+Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Download action repository 'appleboy/ssh-action@v1.0.3' (SHA:029f5b4aeeeb58fdfe1410a5d17f967dacf36262)
+Complete job name: deploy
+5s
+Build container for action use: '/home/runner/work/_actions/appleboy/ssh-action/v1.0.3/Dockerfile'.
+1s
+Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Run actions/checkout@v4
+Syncing repository: Orange612-jjosnayo/galeria_instagram
+Getting Git version info
+Temporarily overriding HOME='/home/runner/work/_temp/876ee0f0-158f-46e3-99d2-f189f628d4f3' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+/usr/bin/git config --global --add safe.directory /home/runner/work/galeria_instagram/galeria_instagram
+Deleting the contents of '/home/runner/work/galeria_instagram/galeria_instagram'
+Initializing the repository
+Disabling automatic garbage collection
+Setting up auth
+Fetching the repository
+Determining the checkout info
+/usr/bin/git sparse-checkout disable
+/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Checking out the ref
+/usr/bin/git log -1 --format=%H
+f20dc664ae9c5c3acf1950e9eab2aa5f25d9581c
+0s
+Run # Convertir el nombre del propietario a minúsculas
+2s
+Run appleboy/ssh-action@v1.0.3
+/usr/bin/docker run --name dcdb77a31abc5526240acb40e579446f263ca_43f2a6 --label 2dcdb7 --workdir /github/workspace --rm -e "REGISTRY" -e "IMAGE_NAME" -e "DOCKER_COMPOSE_CONTENT" -e "INPUT_HOST" -e "INPUT_USERNAME" -e "INPUT_KEY" -e "INPUT_ENVS" -e "INPUT_SCRIPT" -e "INPUT_PORT" -e "INPUT_PASSPHRASE" -e "INPUT_PASSWORD" -e "INPUT_SYNC" -e "INPUT_USE_INSECURE_CIPHER" -e "INPUT_CIPHER" -e "INPUT_TIMEOUT" -e "INPUT_COMMAND_TIMEOUT" -e "INPUT_KEY_PATH" -e "INPUT_FINGERPRINT" -e "INPUT_PROXY_HOST" -e "INPUT_PROXY_PORT" -e "INPUT_PROXY_USERNAME" -e "INPUT_PROXY_PASSWORD" -e "INPUT_PROXY_PASSPHRASE" -e "INPUT_PROXY_TIMEOUT" -e "INPUT_PROXY_KEY" -e "INPUT_PROXY_KEY_PATH" -e "INPUT_PROXY_FINGERPRINT" -e "INPUT_PROXY_CIPHER" -e "INPUT_PROXY_USE_INSECURE_CIPHER" -e "INPUT_SCRIPT_STOP" -e "INPUT_ENVS_FORMAT" -e "INPUT_DEBUG" -e "INPUT_ALLENVS" -e "INPUT_REQUEST_PTY" -e "HOME" -e "GITHUB_JOB" -e "GITHUB_REF" -e "GITHUB_SHA" -e "GITHUB_REPOSITORY" -e "GITHUB_REPOSITORY_OWNER" -e "GITHUB_REPOSITORY_OWNER_ID" -e "GITHUB_RUN_ID" -e "GITHUB_RUN_NUMBER" -e "GITHUB_RETENTION_DAYS" -e "GITHUB_RUN_ATTEMPT" -e "GITHUB_ACTOR_ID" -e "GITHUB_ACTOR" -e "GITHUB_WORKFLOW" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -e "GITHUB_EVENT_NAME" -e "GITHUB_SERVER_URL" -e "GITHUB_API_URL" -e "GITHUB_GRAPHQL_URL" -e "GITHUB_REF_NAME" -e "GITHUB_REF_PROTECTED" -e "GITHUB_REF_TYPE" -e "GITHUB_WORKFLOW_REF" -e "GITHUB_WORKFLOW_SHA" -e "GITHUB_REPOSITORY_ID" -e "GITHUB_TRIGGERING_ACTOR" -e "GITHUB_WORKSPACE" -e "GITHUB_ACTION" -e "GITHUB_EVENT_PATH" -e "GITHUB_ACTION_REPOSITORY" -e "GITHUB_ACTION_REF" -e "GITHUB_PATH" -e "GITHUB_ENV" -e "GITHUB_STEP_SUMMARY" -e "GITHUB_STATE" -e "GITHUB_OUTPUT" -e "GITHUB_ARTIFACTS" -e "GITHUB_ARTIFACTS_LIST" -e "RUNNER_OS" -e "RUNNER_ARCH" -e "RUNNER_NAME" -e "RUNNER_ENVIRONMENT" -e "RUNNER_TOOL_CACHE" -e "RUNNER_TEMP" -e "RUNNER_WORKSPACE" -e "ACTIONS_RUNTIME_URL" -e "ACTIONS_RUNTIME_TOKEN" -e "ACTIONS_CACHE_URL" -e "ACTIONS_RESULTS_URL" -e "ACTIONS_ORCHESTRATION_ID" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp":"/github/runner_temp" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" -v "/home/runner/work/galeria_instagram/galeria_instagram":"/github/workspace" 2dcdb7:7a31abc5526240acb40e579446f263ca
+======CMD======
+# Crear directorio de la aplicación si no existe
+APP_DIR="/home/***/galeria_instagram"
+mkdir -p $APP_DIR
+cd $APP_DIR
+
+# Escribir el docker-compose.yml recibido desde GitHub Actions
+echo "$DOCKER_COMPOSE_CONTENT" > docker-compose.yml
+
+# Autenticar Docker en el VPS con GitHub Registry
+echo "***" | docker login ghcr.io -u jjosnayo2102 --password-stdin
+
+# Crear la red externa proxy-network si no existe
+docker network create proxy-network || true
+
+# Descargar las últimas imágenes y levantar los contenedores
+docker compose pull
+docker compose up -d
+
+# Limpieza de imágenes antiguas para optimizar espacio en disco
+docker image prune -f
+
+======END======
+err: WARNING! Your password will be stored unencrypted in /home/***/.docker/config.json.
+err: Configure a credential helper to remove this warning. See
+err: https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+out: Login Succeeded
+err: Error response from daemon: network with name proxy-network already exists
+err: docker: 'compose' is not a docker command.
+err: See 'docker --help'
+err: unknown shorthand flag: 'd' in -d
+err: See 'docker --help'.
+err: Usage:  docker [OPTIONS] COMMAND
+err: A self-sufficient runtime for containers
+err: Options:
+err:       --config string      Location of client config files (default
+err:                            "/home/***/.docker")
+err:   -c, --context string     Name of the context to use to connect to the
+err:                            daemon (overrides DOCKER_HOST env var and
+err:                            default context set with "docker context use")
+err:   -D, --debug              Enable debug mode
+err:   -H, --host list          Daemon socket(s) to connect to
+err:   -l, --log-level string   Set the logging level
+err:                            ("debug"|"info"|"warn"|"error"|"fatal")
+err:                            (default "info")
+err:       --tls                Use TLS; implied by --tlsverify
+err:       --tlscacert string   Trust certs signed only by this CA (default
+err:                            "/home/***/.docker/ca.pem")
+err:       --tlscert string     Path to TLS certificate file (default
+err:                            "/home/***/.docker/cert.pem")
+err:       --tlskey string      Path to TLS key file (default
+err:                            "/home/***/.docker/key.pem")
+err:       --tlsverify          Use TLS and verify the remote
+err:   -v, --version            Print version information and quit
+err: Management Commands:
+err:   builder     Manage builds
+err:   completion  Generate the autocompletion script for the specified shell
+err:   config      Manage Docker configs
+err:   container   Manage containers
+err:   context     Manage contexts
+err:   image       Manage images
+err:   manifest    Manage Docker image manifests and manifest lists
+err:   network     Manage networks
+err:   node        Manage Swarm nodes
+err:   plugin      Manage plugins
+err:   secret      Manage Docker secrets
+err:   service     Manage services
+err:   stack       Manage Docker stacks
+err:   swarm       Manage Swarm
+err:   system      Manage Docker
+err:   trust       Manage trust on Docker images
+err:   volume      Manage volumes
+err: Commands:
+err:   attach      Attach local standard input, output, and error streams to a running container
+err:   build       Build an image from a Dockerfile
+err:   commit      Create a new image from a container's changes
+err:   cp          Copy files/folders between a container and the local filesystem
+err:   create      Create a new container
+err:   diff        Inspect changes to files or directories on a container's filesystem
+err:   events      Get real time events from the server
+err:   exec        Run a command in a running container
+err:   export      Export a container's filesystem as a tar archive
+err:   history     Show the history of an image
+err:   images      List images
+err:   import      Import the contents from a tarball to create a filesystem image
+err:   info        Display system-wide information
+err:   inspect     Return low-level information on Docker objects
+err:   kill        Kill one or more running containers
+err:   load        Load an image from a tar archive or STDIN
+err:   login       Log in to a Docker registry
+err:   logout      Log out from a Docker registry
+err:   logs        Fetch the logs of a container
+err:   pause       Pause all processes within one or more containers
+err:   port        List port mappings or a specific mapping for the container
+err:   ps          List containers
+err:   pull        Pull an image or a repository from a registry
+err:   push        Push an image or a repository to a registry
+err:   rename      Rename a container
+err:   restart     Restart one or more containers
+err:   rm          Remove one or more containers
+err:   rmi         Remove one or more images
+err:   run         Run a command in a new container
+err:   save        Save one or more images to a tar archive (streamed to STDOUT by default)
+err:   search      Search the Docker Hub for images
+err:   start       Start one or more stopped containers
+err:   stats       Display a live stream of container(s) resource usage statistics
+err:   stop        Stop one or more running containers
+err:   tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+err:   top         Display the running processes of a container
+err:   unpause     Unpause all processes within one or more containers
+err:   update      Update configuration of one or more containers
+err:   version     Show the Docker version information
+err:   wait        Block until one or more containers stop, then print their exit codes
+err: Run 'docker COMMAND --help' for more information on a command.
+err: To get more help with docker, check out our guides at https://docs.docker.com/go/guides/
+out: Total reclaimed space: 0B
+==============================================
+✅ Successfully executed commands to all host.
+==============================================
+0s
+Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Post job cleanup.
+/usr/bin/git version
+git version 2.54.0
+Temporarily overriding HOME='/home/runner/work/_temp/fdbae0af-d78c-402b-a965-490451bb0289' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+/usr/bin/git config --global --add safe.directory /home/runner/work/galeria_instagram/galeria_instagram
+/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+http.https://github.com/.extraheader
+/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+0s
+Cleaning up orphan processes
+Warning: Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
