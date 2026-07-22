@@ -1,0 +1,102 @@
+name: Deploy con Docker a VPS
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  packages: write
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Iniciar sesión en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extraer metadatos para Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+
+      - name: Construir y subir imagen de Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Preparar Docker Compose para Producción
+        id: prep
+        run: |
+          # Convertir el nombre del propietario a minúsculas
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO_NAME="${{ github.event.repository.name }}"
+          
+          # Reemplazar placeholders en docker-compose.yml
+          sed -i "s|image: ghcr.io/owner_lc_placeholder/galeria_instagram:latest|image: ghcr.io/${OWNER_LC}/${REPO_NAME}:latest|g" docker-compose.yml
+          sed -i "s|staging.galeria_instagram.VPS_HOST_PLACEHOLDER.nip.io|staging.${REPO_NAME}.${{ secrets.VPS_HOST }}.nip.io|g" docker-compose.yml
+          
+          # Si se requiere una contraseña de base de datos segura, podemos usar una por defecto o un secreto
+          DB_PASS="${{ secrets.DB_PASSWORD }}"
+          if [ -z "$DB_PASS" ]; then
+            DB_PASS="galeria_secure_pass_123"
+          fi
+          sed -i "s/root_password_placeholder/${DB_PASS}/g" docker-compose.yml
+
+          # Guardar el contenido del docker-compose.yml modificado en una variable de entorno multilinea
+          echo "DOCKER_COMPOSE_CONTENT<<EOF" >> $GITHUB_ENV
+          cat docker-compose.yml >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Desplegar en el VPS vía SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: DOCKER_COMPOSE_CONTENT
+          script: |
+            # Crear directorio de la aplicación si no existe
+            APP_DIR="/home/${{ secrets.VPS_USERNAME }}/${{ github.event.repository.name }}"
+            mkdir -p $APP_DIR
+            cd $APP_DIR
+
+            # Escribir el docker-compose.yml recibido desde GitHub Actions
+            echo "$DOCKER_COMPOSE_CONTENT" > docker-compose.yml
+
+            # Autenticar Docker en el VPS con GitHub Registry
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # Crear la red externa proxy-network si no existe
+            docker network create proxy-network || true
+
+            # Descargar las últimas imágenes y levantar los contenedores
+            docker-compose pull || docker compose pull
+            docker-compose up -d || docker compose up -d
+
+            # Limpieza de imágenes antiguas para optimizar espacio en disco
+            docker image prune -f
