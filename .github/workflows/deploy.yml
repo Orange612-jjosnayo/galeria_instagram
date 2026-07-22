@@ -95,8 +95,8 @@ jobs:
             docker network create proxy-network || true
 
             # Descargar las últimas imágenes y levantar los contenedores
-            docker-compose pull || docker compose pull
-            docker-compose up -d || docker compose up -d
+            docker compose pull
+            docker compose up -d
 
             # Limpieza de imágenes antiguas para optimizar espacio en disco
             docker image prune -f

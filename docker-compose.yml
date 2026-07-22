@@ -15,7 +15,7 @@ services:
 
   web:
     image: ghcr.io/owner_lc_placeholder/galeria_instagram:latest
-    container_name: galeria_instagram
+    container_name: galeria_instagram_web
     restart: always
     environment:
       - DB_HOST=db
