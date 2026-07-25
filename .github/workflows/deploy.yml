@@ -103,9 +103,9 @@ jobs:
       - name: Notificar a n8n para iniciar Auditoría
         run: |
           curl -X POST "https://motion-gem-flounder.ngrok-free.dev/webhook/fea9fca6-329a-4032-b870-1c164cb33031" \
-               -H "Content-Type: application/json" \
+               -H  Content-Type: application/json" \
                -d '{
-                     "repositorio": "\{\{ github.repository \}\}",
-                     "url_staging": "http://staging.\{\{ github.event.repository.name \}\}.8.35.194.76.nip.io",   
-                     "commit_sha": "\{\{ github.sha \}\}"
+                     "repositorio": "${{ github.repository }}",
+                     "url_staging": "http://staging.${{ github.event.repository.name }}.8.35.194.76.nip.io",   
+                     "commit_sha": "${{ github.sha }}"
                    }'
