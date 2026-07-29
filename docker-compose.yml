@@ -23,7 +23,7 @@ services:
       - DB_PASSWORD=root_password_placeholder
       - DB_NAME=galeria
       - DB_PORT=3306
-      - VIRTUAL_HOST=staging.galeria_instagram.VPS_HOST_PLACEHOLDER.nip.io
+      - VIRTUAL_HOST=staging.${REPO_NAME}.${VPS_HOST}.nip.io
       - VIRTUAL_PORT=3000
     depends_on:
       - db
