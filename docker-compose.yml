@@ -8,6 +8,10 @@ services:
     environment:
       MYSQL_DATABASE: galeria
       MYSQL_ROOT_PASSWORD: root_password_placeholder
+    labels:
+      - "backup.enable=true"
+      - "backup.engine=mysql"
+      - "backup.db_user=root"
     volumes:
       - db_data:/var/lib/mysql
     networks:
